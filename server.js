@@ -1,11 +1,13 @@
 var express = require('express');
-
+var bodyParser = require('body-parser');
 var app = express();
 var port = process.env.PORT || 3000;
 
 
-var apiController = require('./controllers/apiController');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
+var apiController = require('./controllers/apiController');
 
 apiController(app);
 

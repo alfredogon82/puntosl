@@ -18,6 +18,7 @@
   "homepage": "https://github.com/alfredogon82/puntosl#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "express-jwt": "^5.3.1",
     "mysql": "^2.18.0",
     "nodemon": "^2.0.2",
     "request": "^2.88.0"
