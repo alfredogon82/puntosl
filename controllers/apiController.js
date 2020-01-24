@@ -2,6 +2,7 @@ var mysql = require('mysql');
 var config = require('../config/config');
 var jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const excel = require('node-excel-export');
 
 
 
@@ -166,6 +167,119 @@ module.exports = function(app) {
 	  	});
 	    
 	  });
+	});
+
+	app.get('/exportTransactionsToExcel', function(req, res) {
+		
+		var token = req.headers['x-access-token'];
+		if (!token) return res.status(401).send({ 
+		  	auth: false, 
+		  	message: 'No token provided.' 
+		});
+		  
+		jwt.verify(token, config.llave, function(err, decoded) {
+	    if (err) return res.status(500).send({ 
+	    	auth: false, 
+	    	message: 'Failed to authenticate token.' 
+		});
+
+		var email = decoded['user_email'];
+		var user_id = crypto.createHash('md5').update(email).digest("hex");
+		//console.log(email, user_id);
+
+		con.query("SELECT * from transaction where user_id='"+user_id+"' order by created_date desc", function(err, rows){
+			if(err) throw err;
+			if (rows.length==0) {
+				res.json({ mensaje: "No posee transacciones." });
+			} else {
+				//res.json({ rows });
+
+				// You can define styles as json object
+				const styles = {
+				  headerDark: {
+				    fill: {
+				      fgColor: {
+				        rgb: 'FF000000'
+				      }
+				    },
+				    font: {
+				      color: {
+				        rgb: 'FFFFFFFF'
+				      },
+				      sz: 14,
+				      bold: true,
+				      underline: true
+				    }
+				  },
+				  cellPink: {
+				    fill: {
+				      fgColor: {
+				        rgb: 'FFFFCCFF'
+				      }
+				    }
+				  },
+				  cellGreen: {
+				    fill: {
+				      fgColor: {
+				        rgb: 'FF00FF00'
+				      }
+				    }
+				  }
+				};
+				 
+				 
+				//Here you specify the export structure
+				const specification = {
+				  transaction_id: { // <- the key should match the actual data key
+				    displayName: 'transaction_id', // <- Here you specify the column header
+				    headerStyle: styles.headerDark, // <- Header style
+				    cellStyle: styles.cellPink, // <- Cell 
+				    width: 220 // <- width in pixels
+				  },
+				  value: {
+				    displayName: 'value',
+				    headerStyle: styles.headerDark,
+				    cellStyle: styles.cellPink, // <- Cell style
+				    width: 220 // <- width in pixels
+				  },
+				  points: {
+				    displayName: 'points',
+				    headerStyle: styles.headerDark,
+				    cellStyle: styles.cellPink, // <- Cell style
+				    width: 220 // <- width in pixels
+				  },
+				  status: {
+				    displayName: 'status',
+				    headerStyle: styles.headerDark,
+				    cellStyle: styles.cellPink, // <- Cell style
+				    width: 220 // <- width in pixels
+				  }
+				}
+				 
+				const dataset = rows
+
+				// Create the excel report.
+				// This function will return Buffer
+				const report = excel.buildExport(
+				  [ // <- Notice that this is an array. Pass multiple sheets to create multi sheet report
+				    {
+				      name: 'Report', // <- Specify sheet name (optional)
+				      specification: specification, // <- Report specification
+				      data: dataset // <-- Report data
+				    }
+				  ]
+				);
+				 
+				// You can then return this straight
+				res.attachment('report.xlsx'); // This is sails.js specific (in general you need to set headers)
+				return res.send(report);
+			
+			}
+	  	
+	  	});
+
+	  	});    
+	    
 	});
 	
 }
