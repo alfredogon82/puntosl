@@ -16,13 +16,7 @@ var con = mysql.createConnection({
 module.exports = function(app) {
 	
 	app.get('/', function(req, res) {
-		console.log(req);
-		con.query('SELECT * from user', function(err, rows){
-			if(err) throw err;
-			console.log("Getting users:"+rows);
-			res.json({ users: rows});
-		});
-
+		res.json({ message: "I don't feel as if I know you you take up all my time the days are long and the nights will throw you away because the sun don't shine"});
 	});
 
 	app.post('/login', function(req, res) {
@@ -281,5 +275,41 @@ module.exports = function(app) {
 	  	});    
 	    
 	});
+
+	app.post('/createTransaction', function(req, res) {
+
+		var value = req.body.value;
+		var points = req.body.points;
+
+		var token = req.headers['x-access-token'];
+		if (!token) return res.status(401).send({ 
+		  	auth: false, 
+		  	message: 'No token provided.' 
+		});
+		  
+		jwt.verify(token, config.llave, function(err, decoded) {
+		    
+		    if (err) return res.status(500).send({ 
+		    	auth: false, 
+		    	message: 'Failed to authenticate token.' 
+			});
+
+			var email = decoded['user_email'];
+			var user_id = crypto.createHash('md5').update(email).digest("hex");
+
+			console.log(email, user_id);
+
+			con.query("INSERT INTO transaction (user_id, value, points, status) VALUES ('"+user_id+"', '"+value+"', '"+points+"', '1')", function(err, rowsIns){
+				if(err) throw err;
+				var check = JSON.parse(JSON.stringify(rowsIns));
+				if(check['affectedRows']==1){
+					res.json({ mensaje: "Ha sido insertado la transacción correctamente"});
+				} else {
+					res.json({ mensaje: "No ha sido insertada la transacción comuniquese con el administrador"});
+				}
+			})
+
+		});
+	})
 	
 }
