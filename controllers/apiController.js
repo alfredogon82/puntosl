@@ -24,7 +24,7 @@ module.exports = function(app) {
 
 	});
 
-	app.post('/autenticar', function(req, res) {
+	app.post('/login', function(req, res) {
 
 		console.log(req.body);
 
@@ -45,8 +45,8 @@ module.exports = function(app) {
 	   				check:  true
 	  			};
 
-		  		const token = jwt.sign(payload, config.llave, {
-		   			expiresIn: 1440
+		  		const token = jwt.sign({ user_email: email }, config.llave, {
+		   			expiresIn: 91440
 		  		});
 
 		  		res.json({
@@ -59,7 +59,7 @@ module.exports = function(app) {
 		});
 	})
 
-	app.post('/registro', function(req, res) {
+	app.post('/register', function(req, res) {
 
 		var email = req.body.email;
 		var user_id = crypto.createHash('md5').update(email).digest("hex");
@@ -79,7 +79,6 @@ module.exports = function(app) {
 		if(checkEmail==true){
 
 			if((email.length>0) && (passw.length>0) && (name.length>0) && (lastname.length>0) && (birthdate.length>0)){
-				//res.json({ mensaje: "entra."});
 			
 				con.query("SELECT * from user where email='"+email+"'", function(err, rows){
 					if(err) throw err;
@@ -107,5 +106,66 @@ module.exports = function(app) {
 		}
 
 	})
+
+	app.get('/getTransactionHistory', function(req, res) {
+
+	  var token = req.headers['x-access-token'];
+	  if (!token) return res.status(401).send({ 
+	  	auth: false, 
+	  	message: 'No token provided.' 
+	  });
+	  
+	  jwt.verify(token, config.llave, function(err, decoded) {
+	    if (err) return res.status(500).send({ 
+	    	auth: false, 
+	    	message: 'Failed to authenticate token.' 
+	    });
+
+	    
+	    var email = decoded['user_email'];
+		var user_id = crypto.createHash('md5').update(email).digest("hex");
+		//console.log(email, user_id);
+
+		con.query("SELECT * from transaction where user_id='"+user_id+"' order by created_date desc", function(err, rows){
+			if(err) throw err;
+			if (rows.length==0) {
+				res.json({ mensaje: "No posee transacciones." });
+			} else {
+				res.json({ transactions: rows });
+			}
+	  	});
+	    
+	  });
+	});
+
+	app.get('/getPoints', function(req, res) {
+		
+	  var token = req.headers['x-access-token'];
+	  if (!token) return res.status(401).send({ 
+	  	auth: false, 
+	  	message: 'No token provided.' 
+	  });
+	  
+	  jwt.verify(token, config.llave, function(err, decoded) {
+	    if (err) return res.status(500).send({ 
+	    	auth: false, 
+	    	message: 'Failed to authenticate token.' 
+	    });
+
+	    
+	    var email = decoded['user_email'];
+		var user_id = crypto.createHash('md5').update(email).digest("hex");
+
+		con.query("SELECT SUM(points) as sumapuntos FROM transaction where user_id='"+user_id+"' and status='1'", function(err, rows){
+			if(err) throw err;
+			if (rows.length==0) {
+				res.json({ mensaje: "No posee puntos." });
+			} else {
+				res.json({ sumapuntos: rows });
+			}
+	  	});
+	    
+	  });
+	});
 	
 }
