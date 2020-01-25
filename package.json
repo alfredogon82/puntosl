@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",
     "mysql": "^2.18.0",
+    "node-excel-export": "^1.4.4",
     "nodemon": "^2.0.2",
     "request": "^2.88.0"
   }

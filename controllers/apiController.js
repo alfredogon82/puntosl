@@ -107,13 +107,13 @@ module.exports = function(app) {
 	  var token = req.headers['x-access-token'];
 	  if (!token) return res.status(401).send({ 
 	  	auth: false, 
-	  	message: 'No token provided.' 
+	  	message: 'No se ha suministrado token' 
 	  });
 	  
 	  jwt.verify(token, config.llave, function(err, decoded) {
 	    if (err) return res.status(500).send({ 
 	    	auth: false, 
-	    	message: 'Failed to authenticate token.' 
+	    	message: 'Falló la autenticación del token.' 
 	    });
 
 	    
@@ -138,13 +138,13 @@ module.exports = function(app) {
 	  var token = req.headers['x-access-token'];
 	  if (!token) return res.status(401).send({ 
 	  	auth: false, 
-	  	message: 'No token provided.' 
+	  	message: 'No se ha suministrado token' 
 	  });
 	  
 	  jwt.verify(token, config.llave, function(err, decoded) {
 	    if (err) return res.status(500).send({ 
 	    	auth: false, 
-	    	message: 'Failed to authenticate token.' 
+	    	message: 'Falló la autenticación del token.' 
 	    });
 
 	    
@@ -168,13 +168,13 @@ module.exports = function(app) {
 		var token = req.headers['x-access-token'];
 		if (!token) return res.status(401).send({ 
 		  	auth: false, 
-		  	message: 'No token provided.' 
+		  	message: 'No se ha suministrado token' 
 		});
 		  
 		jwt.verify(token, config.llave, function(err, decoded) {
 	    if (err) return res.status(500).send({ 
 	    	auth: false, 
-	    	message: 'Failed to authenticate token.' 
+	    	message: 'Falló la autenticación del token.' 
 		});
 
 		var email = decoded['user_email'];
@@ -281,35 +281,87 @@ module.exports = function(app) {
 		var value = req.body.value;
 		var points = req.body.points;
 
-		var token = req.headers['x-access-token'];
-		if (!token) return res.status(401).send({ 
-		  	auth: false, 
-		  	message: 'No token provided.' 
-		});
-		  
-		jwt.verify(token, config.llave, function(err, decoded) {
-		    
-		    if (err) return res.status(500).send({ 
-		    	auth: false, 
-		    	message: 'Failed to authenticate token.' 
+		if((value.length>0) && (points.length>0)){
+
+			var token = req.headers['x-access-token'];
+			if (!token) return res.status(401).send({ 
+			  	auth: false, 
+			  	message: 'No se ha suministrado token' 
+			});
+			  
+			jwt.verify(token, config.llave, function(err, decoded) {
+			    
+			    if (err) return res.status(500).send({ 
+			    	auth: false, 
+			    	message: 'Falló la autenticación del token.' 
+				});
+
+				var email = decoded['user_email'];
+				var user_id = crypto.createHash('md5').update(email).digest("hex");
+
+				console.log(email, user_id);
+
+				con.query("INSERT INTO transaction (user_id, value, points, status) VALUES ('"+user_id+"', '"+value+"', '"+points+"', '1')", function(err, rowsIns){
+					if(err) throw err;
+					var check = JSON.parse(JSON.stringify(rowsIns));
+					if(check['affectedRows']==1){
+						res.json({ mensaje: "Ha sido insertado la transacción correctamente"});
+					} else {
+						res.json({ mensaje: "No ha sido insertada la transacción comuniquese con el administrador"});
+					}
+				})
+
 			});
 
-			var email = decoded['user_email'];
-			var user_id = crypto.createHash('md5').update(email).digest("hex");
+		} else {
+			res.json({ mensaje: "Deben enviarse valores reales"});
+					
+		}
+	})
 
-			console.log(email, user_id);
+	app.put('/inactivateTransaction', function(req, res) {
 
-			con.query("INSERT INTO transaction (user_id, value, points, status) VALUES ('"+user_id+"', '"+value+"', '"+points+"', '1')", function(err, rowsIns){
-				if(err) throw err;
-				var check = JSON.parse(JSON.stringify(rowsIns));
-				if(check['affectedRows']==1){
-					res.json({ mensaje: "Ha sido insertado la transacción correctamente"});
-				} else {
-					res.json({ mensaje: "No ha sido insertada la transacción comuniquese con el administrador"});
-				}
-			})
+		var transaction_id = req.body.transaction_id;
+		var status = req.body.status;
+		
+		if(transaction_id.length>0){
 
-		});
+			var token = req.headers['x-access-token'];
+			if (!token) return res.status(401).send({ 
+			  	auth: false, 
+			  	message: 'No se ha suministrado token' 
+			});
+			  
+			jwt.verify(token, config.llave, function(err, decoded) {
+			    
+			    if (err) return res.status(500).send({ 
+			    	auth: false, 
+			    	message: 'Falló la autenticación del token.' 
+				});
+
+				var email = decoded['user_email'];
+				var user_id = crypto.createHash('md5').update(email).digest("hex");
+
+				console.log(email, user_id);
+
+				con.query("UPDATE transaction SET status='"+status+"' WHERE transaction_id='"+transaction_id+"'", function(err, rowsIns){
+					
+					if(err) throw err;
+					var check = JSON.parse(JSON.stringify(rowsIns));
+					if(check['affectedRows']==1){
+						res.json({ mensaje: "Ha sido actualizado el estado de la transacción correctamente"});
+					} else {
+						res.json({ mensaje: "No ha sido actualizado el estado de la transacción, comuniquese con el administrador"});
+					}
+
+				})
+
+			});
+
+		} else {
+			res.json({ mensaje: "Deben enviarse valores reales"});
+					
+		}
 	})
 	
 }
