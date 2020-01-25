@@ -1,0 +1,228 @@
+{
+	"variables": [],
+	"info": {
+		"name": "puntosLeal",
+		"_postman_id": "90a7815c-ea5e-8d41-2d93-397d85ebb0e9",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/login",
+			"request": {
+				"url": "http://localhost:3000/login",
+				"method": "POST",
+				"header": [
+					{
+						"key": "usuario",
+						"value": "test",
+						"description": "",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "alfredogon82@yahoo.com",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "contrasena",
+							"value": "1q2w3e4r5T",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/register",
+			"request": {
+				"url": "http://localhost:3000/register",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "nombre",
+							"value": "alfredo",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "apellido",
+							"value": "gonzalez",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "birthdate",
+							"value": "1982-11-10",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "aldous4521@yahoo.com",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "contrasena",
+							"value": "1q2w3e4r5T",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/getTransactionHistory",
+			"request": {
+				"url": "http://localhost:3000/getTransactionHistory",
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2VtYWlsIjoiYWxmcmVkb2dvbjgyQHlhaG9vLmNvbSIsImlhdCI6MTU3OTgzNTgyMywiZXhwIjoxNTc5OTI3MjYzfQ.hKXS2mZ7A_uOBa7fOQW6q5qwBN5cD1h_3fU6NHnWqL4",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/getPoints",
+			"request": {
+				"url": "http://localhost:3000/getPoints",
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2VtYWlsIjoiYWxmcmVkb2dvbjgyQHlhaG9vLmNvbSIsImlhdCI6MTU3OTgzNTgyMywiZXhwIjoxNTc5OTI3MjYzfQ.hKXS2mZ7A_uOBa7fOQW6q5qwBN5cD1h_3fU6NHnWqL4",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/exportTransactionsToExcel",
+			"request": {
+				"url": "localhost:3000/exportTransactionsToExcel",
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2VtYWlsIjoiYWxmcmVkb2dvbjgyQHlhaG9vLmNvbSIsImlhdCI6MTU3OTgzOTc3NSwiZXhwIjoxNTc5OTMxMjE1fQ.usmVMemS5rlmAJIZCxbQfQ02hdZp9TiJ72_V51RYvsc",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/createTransaction",
+			"request": {
+				"url": "http://localhost:3000/createTransaction",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2VtYWlsIjoiYWxmcmVkb2dvbjgyQHlhaG9vLmNvbSIsImlhdCI6MTU3OTg0MTExNywiZXhwIjoxNTc5OTMyNTU3fQ.NJv5fFLAiF0VhXxiIzYj_aagcAKrezV2-3rqQc2-aoo",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "value",
+							"value": "3000",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "points",
+							"value": "100",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/inactivateTransaction",
+			"request": {
+				"url": "http://localhost:3000/inactivateTransaction",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2VtYWlsIjoiYWxmcmVkb2dvbjgyQHlhaG9vLmNvbSIsImlhdCI6MTU3OTkxMjE0MSwiZXhwIjoxNTgwMDAzNTgxfQ.IGZtuahG0jSZDvGlXuUJxtRUZVQ-Nr9Gdlm0OK3eUfI",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "transaction_id",
+							"value": "2",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "status",
+							"value": "0",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
